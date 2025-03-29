@@ -12,6 +12,10 @@ st.title("🎯 Adam Optimizer Trajectory Explorer")
 st.markdown("Explore how different **learning rates**, **loss surfaces**, and **user-placed attractors** affect optimizer convergence!")
 
 # ---- UI for surface + optimizer ----
+# 🚨 Handle edge case: no learning rates selected
+if 'selected_lrs' in locals() and selected_lrs == []:
+    st.warning("Please select at least one learning rate to visualize.")
+    st.stop()
 surface_choice = st.selectbox("Choose Loss Surface", ["Twin Basins", "Multi Gaussians", "Wavy + Dips", "Funnel Pit", "Custom Attractors"])
 noise_level = st.slider("Surface Noise / Difficulty", 0.0, 1.0, 0.0, step=0.1)
 
@@ -25,6 +29,10 @@ with col2:
     y0 = st.slider("Starting Y", -1.0, 1.0, 0.05, step=0.05)
 
 # ---- Attractors for Custom Surface ----
+# 🚨 Handle empty custom attractors if surface is selected
+if surface_choice == "Custom Attractors" and not custom_attractors:
+    st.warning("Define at least one attractor to visualize the custom surface.")
+    st.stop()
 custom_attractors = []
 if surface_choice == "Custom Attractors":
     st.markdown("### 🎯 Define Custom Attractors")
