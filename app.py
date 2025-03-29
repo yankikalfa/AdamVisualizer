@@ -89,10 +89,7 @@ def cost_function_tf(x, y):
         z -= 1.0 * f2_tf(x, y, -0.5, -0.5, 0.2, 0.2)
     elif surface_choice == "Funnel Pit":
         z = -tf.exp(-(x ** 2 + y ** 2) / 0.05)
-    elif surface_choice == "Custom Attractors":
-        for x_a, y_a, d in custom_attractors:
-            z -= d * f2_tf(x, y, x_a, y_a, 0.2, 0.2)
-
+    
     if noise_level > 0:
         z += noise_level * tf.sin(5 * x) * tf.cos(5 * y)
     return z
