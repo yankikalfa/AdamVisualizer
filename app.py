@@ -25,8 +25,8 @@ with col1:
     selected_lrs = st.multiselect("Compare Learning Rates", preset_lrs, default=[0.001, 0.01])
     steps = st.slider("Steps", 50, 500, 200, step=25)
 with col2:
-    x0 = st.slider("Starting X", -1.0, 1.0, 0.0, step=0.05)
-    y0 = st.slider("Starting Y", -1.0, 1.0, 0.05, step=0.05)
+    x0 = st.slider("Starting X", -1.0, 1.0, value=0.0, step=0.05)
+    y0 = st.slider("Starting Y", -1.0, 1.0, value=-1.0, step=0.05)
 
 # ---- Attractors for Custom Surface ----
 # 🚨 Handle empty custom attractors if surface is selected
@@ -127,11 +127,16 @@ for idx, lr in enumerate(selected_lrs):
         with tf.GradientTape() as tape:
             loss = cost_function_tf(x, y)
         grads = tape.gradient(loss, [x, y])
-        if None not in grads:
-            optimizer.apply_gradients(zip(grads, [x, y]))
+        grads_and_vars = [(g, v) for g, v in zip(grads, [x, y]) if g is not None]
+        if grads_and_vars:
+            optimizer.apply_gradients(grads_and_vars)
         else:
-            st.warning(f"⚠️ No gradients at (x={x.numpy():.2f}, y={y.numpy():.2f}) — skipping remaining steps.")
-            break
+            # Automatically reset to random nearby position
+            new_x = x.numpy() + np.random.uniform(-0.1, 0.1)
+            new_y = y.numpy() + np.random.uniform(-0.1, 0.1)
+            x.assign(new_x)
+            y.assign(new_y)
+            st.info(f"🔁 Resetting optimizer to new position (x={new_x:.2f}, y={new_y:.2f}) due to vanishing gradients.")
         history.append((x.numpy(), y.numpy(), cost_function_np(x.numpy(), y.numpy())))
 
     xs, ys, zs = zip(*history)
