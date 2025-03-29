@@ -29,11 +29,25 @@ with col2:
     y0 = st.slider("Starting Y", -1.0, 1.0, value=-1.0, step=0.05)
 
 # ---- Attractors for Custom Surface ----
-# 🚨 Handle empty custom attractors if surface is selected
-if surface_choice == "Custom Attractors" and not custom_attractors:
-    st.warning("Define at least one attractor to visualize the custom surface.")
-    st.stop()
 custom_attractors = []
+
+if surface_choice == "Custom Attractors":
+    st.markdown("### 🎯 Define Custom Attractors")
+    num = st.slider("Number of Attractors", 1, 5, 2)
+    for i in range(num):
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            x_a = st.slider(f"X{i+1}", -1.2, 1.2, -0.4 + 0.8 * i / max(num-1, 1), key=f"x{i}")
+        with col2:
+            y_a = st.slider(f"Y{i+1}", -1.2, 1.2, 0.0, key=f"y{i}")
+        with col3:
+            depth = st.slider(f"Depth{i+1}", 0.5, 2.0, 1.0, key=f"d{i}")
+        custom_attractors.append((x_a, y_a, depth))
+
+    # 🚨 Handle empty custom attractors if surface is selected
+    if not custom_attractors:
+        st.warning("Define at least one attractor to visualize the custom surface.")
+        st.stop()
 if surface_choice == "Custom Attractors":
     st.markdown("### 🎯 Define Custom Attractors")
     num = st.slider("Number of Attractors", 1, 5, 2)
