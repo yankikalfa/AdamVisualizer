@@ -127,7 +127,11 @@ for idx, lr in enumerate(selected_lrs):
         with tf.GradientTape() as tape:
             loss = cost_function_tf(x, y)
         grads = tape.gradient(loss, [x, y])
-        optimizer.apply_gradients(zip(grads, [x, y]))
+        if None not in grads:
+            optimizer.apply_gradients(zip(grads, [x, y]))
+        else:
+            st.warning(f"⚠️ No gradients at (x={x.numpy():.2f}, y={y.numpy():.2f}) — skipping remaining steps.")
+            break
         history.append((x.numpy(), y.numpy(), cost_function_np(x.numpy(), y.numpy())))
 
     xs, ys, zs = zip(*history)
