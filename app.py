@@ -25,7 +25,7 @@ with col1:
     selected_lrs = st.multiselect("Compare Learning Rates", preset_lrs, default=[0.001, 0.01])
     steps = st.slider("Steps", 50, 500, 200, step=25)
 with col2:
-    x0 = st.slider("Starting X", -1.0, 1.0, value=0.0, step=0.05)
+    x0 = st.slider("Starting X", -1.0, 1.0, value=-0.5, step=0.05)
     y0 = st.slider("Starting Y", -1.0, 1.0, value=-1.0, step=0.05)
 
 # ---- Cost Surface Function ----
