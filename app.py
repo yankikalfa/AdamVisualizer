@@ -17,7 +17,7 @@ if 'selected_lrs' in locals() and selected_lrs == []:
     st.warning("Please select at least one learning rate to visualize.")
     st.stop()
 surface_choice = st.selectbox("Choose Loss Surface", ["Twin Basins", "Multi Gaussians", "Wavy + Dips", "Funnel Pit", "Custom Attractors"])
-noise_level = st.slider("Surface Noise / Difficulty", 0.0, 1.0, 0.0, step=0.01)
+noise_level = st.slider("Surface Noise / Difficulty", min_value=0.001, max_value=1.0, value=0.001, step=0.01)
 
 col1, col2 = st.columns(2)
 with col1:
