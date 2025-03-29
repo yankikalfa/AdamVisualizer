@@ -95,7 +95,7 @@ def cost_function_tf(x, y):
         z -= 1.5 * f2_tf(x, y, -0.9, 0.0, 0.2, 0.2)  # true minimum
         z -= 0.7 * f2_tf(x, y, 0.9, 0.0, 0.2, 0.2)  # fake minimum
         z -= 0.4 * f2_tf(x, y, 0.0, 0.0, 0.25, 0.25)
-    elif surface_choice == '"Overhyped" Kalfa-Timmermann-van der Zwan':
+    elif surface_choice == "Overhyped Kalfa-Timmermann-van der Zwan":
         z -= 1.0 * f2_tf(x, y, -0.4, 0.0, 0.2, 0.2)   # Left basin
         z -= 1.3 * f2_tf(x, y, 0.4, 0.0, 0.2, 0.2)    # Right basin (slightly deeper)
         z -= 0.4 * f2_tf(x, y, 0.0, 0.0, 0.25, 0.25)  # Central ridge
