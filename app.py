@@ -1,5 +1,3 @@
-# app.py
-
 import streamlit as st
 import plotly.graph_objects as go
 import numpy as np
@@ -16,7 +14,7 @@ st.markdown("Explore how different **learning rates**, **loss surfaces**, and **
 if 'selected_lrs' in locals() and selected_lrs == []:
     st.warning("Please select at least one learning rate to visualize.")
     st.stop()
-surface_choice = st.selectbox("Choose Loss Surface", ["Overhyped Kalfa-Timmermann-van der Zwan", "Twin Basins", "Multi Gaussians", "Wavy + Dips", "Funnel Pit"], index=0)
+surface_choice = st.selectbox("Choose Loss Surface", ["Overhyped KTZ", "Twin Basins", "Multi Gaussians", "Wavy + Dips", "Funnel Pit"], index=0)
 noise_level = st.slider("Surface Noise / Difficulty", min_value=0.001, max_value=1.0, value=0.001, step=0.01)
 
 col1, col2 = st.columns(2)
@@ -41,7 +39,7 @@ def cost_function_np(x, y):
         z -= 1.5 * f2(x, y, -0.9, 0.0, 0.2, 0.2)  # true minimum
         z -= 0.7 * f2(x, y, 0.9, 0.0, 0.2, 0.2)  # fake minimum
         z -= 0.4 * f2(x, y, 0.0, 0.0, 0.25, 0.25)
-    elif surface_choice == "Overhyped Kalfa-Timmermann-van der Zwan":
+    elif surface_choice == "Overhyped KTZ":
         z -= 1.0 * f2(x, y, -0.4, 0.0, 0.2, 0.2)   # Left basin
         z -= 1.3 * f2(x, y, 0.4, 0.0, 0.2, 0.2)    # Right basin (slightly deeper)
         z -= 0.4 * f2(x, y, 0.0, 0.0, 0.25, 0.25)  # Central ridge
@@ -73,7 +71,7 @@ def cost_function_tf(x, y):
         z -= 1.5 * f2_tf(x, y, -0.9, 0.0, 0.2, 0.2)  # true minimum
         z -= 0.7 * f2_tf(x, y, 0.9, 0.0, 0.2, 0.2)  # fake minimum
         z -= 0.4 * f2_tf(x, y, 0.0, 0.0, 0.25, 0.25)
-    elif surface_choice == "Overhyped Kalfa-Timmermann-van der Zwan":
+    elif surface_choice == "Overhyped KTZ":
         z -= 1.0 * f2_tf(x, y, -0.4, 0.0, 0.2, 0.2)   # Left basin
         z -= 1.3 * f2_tf(x, y, 0.4, 0.0, 0.2, 0.2)    # Right basin (slightly deeper)
         z -= 0.4 * f2_tf(x, y, 0.0, 0.0, 0.25, 0.25)  # Central ridge
