@@ -16,7 +16,7 @@ st.markdown("Explore how different **learning rates**, **loss surfaces**, and **
 if 'selected_lrs' in locals() and selected_lrs == []:
     st.warning("Please select at least one learning rate to visualize.")
     st.stop()
-surface_choice = st.selectbox("Choose Loss Surface", ["Overhyped Kalfa-Timmermann-van der Zwan", "Twin Basins", "Multi Gaussians", "Wavy + Dips", "Funnel Pit", "Custom Attractors"])
+surface_choice = st.selectbox("Choose Loss Surface", ["Overhyped Kalfa-Timmermann-van der Zwan", "Twin Basins", "Multi Gaussians", "Wavy + Dips", "Funnel Pit"], index=0)
 noise_level = st.slider("Surface Noise / Difficulty", min_value=0.001, max_value=1.0, value=0.001, step=0.01)
 
 col1, col2 = st.columns(2)
@@ -27,39 +27,6 @@ with col1:
 with col2:
     x0 = st.slider("Starting X", -1.0, 1.0, value=0.0, step=0.05)
     y0 = st.slider("Starting Y", -1.0, 1.0, value=-1.0, step=0.05)
-
-# ---- Attractors for Custom Surface ----
-custom_attractors = []
-
-if surface_choice == "Custom Attractors":
-    st.markdown("### 🎯 Define Custom Attractors")
-    num = st.slider("Number of Attractors", 1, 5, 2)
-    for i in range(num):
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            x_a = st.slider(f"X{i+1}", -1.2, 1.2, -0.4 + 0.8 * i / max(num-1, 1), key=f"x{i}")
-        with col2:
-            y_a = st.slider(f"Y{i+1}", -1.2, 1.2, 0.0, key=f"y{i}")
-        with col3:
-            depth = st.slider(f"Depth{i+1}", 0.5, 2.0, 1.0, key=f"d{i}")
-        custom_attractors.append((x_a, y_a, depth))
-
-    # 🚨 Handle empty custom attractors if surface is selected
-    if not custom_attractors:
-        st.warning("Define at least one attractor to visualize the custom surface.")
-        st.stop()
-if surface_choice == "Custom Attractors":
-    st.markdown("### 🎯 Define Custom Attractors")
-    num = st.slider("Number of Attractors", 1, 5, 2)
-    for i in range(num):
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            x_a = st.slider(f"X{i+1}", -1.2, 1.2, -0.4 + 0.8 * i / max(num-1, 1), key=f"x{i}")
-        with col2:
-            y_a = st.slider(f"Y{i+1}", -1.2, 1.2, 0.0, key=f"y{i}")
-        with col3:
-            depth = st.slider(f"Depth{i+1}", 0.5, 2.0, 1.0, key=f"d{i}")
-        custom_attractors.append((x_a, y_a, depth))
 
 # ---- Cost Surface Function ----
 
@@ -89,10 +56,7 @@ def cost_function_np(x, y):
         z -= 1.0 * f2(x, y, -0.5, -0.5, 0.2, 0.2)
     elif surface_choice == "Funnel Pit":
         z = -np.exp(-(x**2 + y**2) / 0.05)
-    elif surface_choice == "Custom Attractors":
-        for x_a, y_a, d in custom_attractors:
-            z -= d * f2(x, y, x_a, y_a, 0.2, 0.2)
-
+    
     if noise_level > 0:
         z += noise_level * np.sin(5 * x) * np.cos(5 * y)
     return z
