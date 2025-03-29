@@ -16,7 +16,7 @@ st.markdown("Explore how different **learning rates**, **loss surfaces**, and **
 if 'selected_lrs' in locals() and selected_lrs == []:
     st.warning("Please select at least one learning rate to visualize.")
     st.stop()
-surface_choice = st.selectbox("Choose Loss Surface", ["Twin Basins", "Multi Gaussians", "Wavy + Dips", "Funnel Pit", "Custom Attractors"])
+surface_choice = st.selectbox("Choose Loss Surface", ["Overhyped" Kalfa-Timmermann-van der Zwan", "Twin Basins", "Multi Gaussians", "Wavy + Dips", "Funnel Pit", "Custom Attractors"])
 noise_level = st.slider("Surface Noise / Difficulty", min_value=0.001, max_value=1.0, value=0.001, step=0.01)
 
 col1, col2 = st.columns(2)
@@ -57,9 +57,13 @@ def f2(x, y, x0, y0, sx, sy):
 def cost_function_np(x, y):
     z = 0
     if surface_choice == "Twin Basins":
-        z -= 1.0 * f2(x, y, -0.6, 0.0, 0.2, 0.2)
-        z -= 1.0 * f2(x, y, 0.6, 0.0, 0.2, 0.2)
+        z -= 1.5 * f2(x, y, -0.9, 0.0, 0.2, 0.2)  # true minimum
+        z -= 0.7 * f2(x, y, 0.9, 0.0, 0.2, 0.2)  # fake minimum
         z -= 0.4 * f2(x, y, 0.0, 0.0, 0.25, 0.25)
+    elif surface_choice == '"Overhyped" Kalfa-Timmermann-van der Zwan':
+        z -= 1.0 * f2(x, y, -0.4, 0.0, 0.2, 0.2)   # Left basin
+        z -= 1.3 * f2(x, y, 0.4, 0.0, 0.2, 0.2)    # Right basin (slightly deeper)
+        z -= 0.4 * f2(x, y, 0.0, 0.0, 0.25, 0.25)  # Central ridge
     elif surface_choice == "Multi Gaussians":
         z -= 1.2 * f2(x, y, -0.8, 0.6, 0.2, 0.2)
         z -= 0.9 * f2(x, y, 0.8, 0.6, 0.3, 0.3)
@@ -88,9 +92,13 @@ def f2_tf(x, y, x0, y0, sx, sy):
 def cost_function_tf(x, y):
     z = 0.0
     if surface_choice == "Twin Basins":
-        z -= 1.0 * f2_tf(x, y, -0.6, 0.0, 0.2, 0.2)
-        z -= 1.0 * f2_tf(x, y, 0.6, 0.0, 0.2, 0.2)
+        z -= 1.5 * f2_tf(x, y, -0.9, 0.0, 0.2, 0.2)  # true minimum
+        z -= 0.7 * f2_tf(x, y, 0.9, 0.0, 0.2, 0.2)  # fake minimum
         z -= 0.4 * f2_tf(x, y, 0.0, 0.0, 0.25, 0.25)
+    elif surface_choice == '"Overhyped" Kalfa-Timmermann-van der Zwan':
+        z -= 1.0 * f2_tf(x, y, -0.4, 0.0, 0.2, 0.2)   # Left basin
+        z -= 1.3 * f2_tf(x, y, 0.4, 0.0, 0.2, 0.2)    # Right basin (slightly deeper)
+        z -= 0.4 * f2_tf(x, y, 0.0, 0.0, 0.25, 0.25)  # Central ridge
     elif surface_choice == "Multi Gaussians":
         z -= 1.2 * f2_tf(x, y, -0.8, 0.6, 0.2, 0.2)
         z -= 0.9 * f2_tf(x, y, 0.8, 0.6, 0.3, 0.3)
@@ -120,7 +128,7 @@ fig = go.Figure()
 
 # 🎯 Label known true minima for Twin Basins
 if surface_choice == "Twin Basins":
-    minima_x = [-0.6, 0.6]
+    minima_x = [-0.9, 0.9]
     minima_y = [0.0, 0.0]
     minima_z = [cost_function_np(x, y) for x, y in zip(minima_x, minima_y)]
     fig.add_trace(go.Scatter3d(x=minima_x, y=minima_y, z=minima_z,
