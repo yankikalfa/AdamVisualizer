@@ -17,7 +17,7 @@ if 'selected_lrs' in locals() and selected_lrs == []:
     st.warning("Please select at least one learning rate to visualize.")
     st.stop()
 surface_choice = st.selectbox("Choose Loss Surface", ["Twin Basins", "Multi Gaussians", "Wavy + Dips", "Funnel Pit", "Custom Attractors"])
-noise_level = st.slider("Surface Noise / Difficulty", 0.0, 1.0, 0.0, step=0.1)
+noise_level = st.slider("Surface Noise / Difficulty", 0.0, 1.0, 0.0, step=0.01)
 
 col1, col2 = st.columns(2)
 with col1:
@@ -48,6 +48,9 @@ if surface_choice == "Custom Attractors":
         custom_attractors.append((x_a, y_a, depth))
 
 # ---- Cost Surface Function ----
+
+# Set seed for reproducibility
+np.random.seed(42)
 def f2(x, y, x0, y0, sx, sy):
     return np.exp(-((x - x0)**2 / (2 * sx**2) + (y - y0)**2 / (2 * sy**2))) / (2 * np.pi * sx * sy)
 
@@ -114,6 +117,18 @@ X, Y = np.meshgrid(x_vals, y_vals)
 Z = cost_function_np(X, Y)
 
 fig = go.Figure()
+
+# 🎯 Label known true minima for Twin Basins
+if surface_choice == "Twin Basins":
+    minima_x = [-0.6, 0.6]
+    minima_y = [0.0, 0.0]
+    minima_z = [cost_function_np(x, y) for x, y in zip(minima_x, minima_y)]
+    fig.add_trace(go.Scatter3d(x=minima_x, y=minima_y, z=minima_z,
+                               mode='markers+text',
+                               marker=dict(size=6, color='purple', symbol='x'),
+                               text=["Min 1", "Min 2"],
+                               textposition="top center",
+                               name="True Minima"))
 fig.add_trace(go.Surface(z=Z, x=X, y=Y, colorscale='RdBu', opacity=0.6, showscale=False))
 fig.add_trace(go.Contour(z=Z, x=x_vals, y=y_vals, contours_coloring='lines', showscale=False, line=dict(width=1), opacity=0.5))
 
@@ -134,8 +149,9 @@ for idx, lr in enumerate(selected_lrs):
             # Automatically reset to random nearby position
             new_x = x.numpy() + np.random.uniform(-0.1, 0.1)
             new_y = y.numpy() + np.random.uniform(-0.1, 0.1)
-            x.assign(new_x)
-            y.assign(new_y)
+            x = tf.Variable(new_x, dtype=tf.float32)
+            y = tf.Variable(new_y, dtype=tf.float32)
+            optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
             st.info(f"🔁 Resetting optimizer to new position (x={new_x:.2f}, y={new_y:.2f}) due to vanishing gradients.")
         history.append((x.numpy(), y.numpy(), cost_function_np(x.numpy(), y.numpy())))
 
