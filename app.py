@@ -54,8 +54,8 @@ def f2(x, y, x0, y0, sx, sy):
 def cost_function_np(x, y):
     z = 0
     if surface_choice == "Twin Basins":
-        z -= 1.0 * f2(x, y, -0.4, 0.0, 0.2, 0.2)
-        z -= 1.0 * f2(x, y, 0.4, 0.0, 0.2, 0.2)
+        z -= 1.0 * f2(x, y, -0.6, 0.0, 0.2, 0.2)
+        z -= 1.0 * f2(x, y, 0.6, 0.0, 0.2, 0.2)
         z -= 0.4 * f2(x, y, 0.0, 0.0, 0.25, 0.25)
     elif surface_choice == "Multi Gaussians":
         z -= 1.2 * f2(x, y, -0.8, 0.6, 0.2, 0.2)
@@ -85,8 +85,8 @@ def f2_tf(x, y, x0, y0, sx, sy):
 def cost_function_tf(x, y):
     z = 0.0
     if surface_choice == "Twin Basins":
-        z -= 1.0 * f2_tf(x, y, -0.4, 0.0, 0.2, 0.2)
-        z -= 1.0 * f2_tf(x, y, 0.4, 0.0, 0.2, 0.2)
+        z -= 1.0 * f2_tf(x, y, -0.6, 0.0, 0.2, 0.2)
+        z -= 1.0 * f2_tf(x, y, 0.6, 0.0, 0.2, 0.2)
         z -= 0.4 * f2_tf(x, y, 0.0, 0.0, 0.25, 0.25)
     elif surface_choice == "Multi Gaussians":
         z -= 1.2 * f2_tf(x, y, -0.8, 0.6, 0.2, 0.2)
