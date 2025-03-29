@@ -158,8 +158,8 @@ fig.add_trace(go.Contour(z=Z, x=x_vals, y=y_vals, contours_coloring='lines', sho
 
 colors = ['black', 'blue', 'green', 'red', 'orange']
 for idx, lr in enumerate(selected_lrs):
-    x = tf.Variable([x0], dtype=tf.float32)
-    y = tf.Variable([y0], dtype=tf.float32)
+    x = tf.Variable(x0, dtype=tf.float32)
+    y = tf.Variable(y0, dtype=tf.float32)
     optimizer = tf.keras.optimizers.Adam(learning_rate=lr)
     history = [(x0, y0, cost_function_np(x0, y0))]
     for _ in range(steps):
